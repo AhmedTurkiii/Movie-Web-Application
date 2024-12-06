@@ -13,6 +13,16 @@ const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
 
+const pool = mysql.createPool({
+  host: "eric-rios.tech",
+  user: "ericrios_webuser",
+  password: "Cst-336",
+  database: "ericrios_movies",
+  connectionLimit: 10,
+  waitForConnections: true
+});
+const conn = await pool.getConnection();
+
 // fetch data from the TMDB API and return it in an array
 async function fetchMovies(category) {
   const url = `${TMDB_BASE_URL}/movie/${category}?api_key=${TMDB_API_KEY}&language=en-US&page=1`;
