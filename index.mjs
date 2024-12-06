@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { text } from 'express';
 import fetch from 'node-fetch';
 import dotenv from 'dotenv';
 
@@ -39,70 +39,94 @@ app.get('/', async (req, res) => {
 
 // Route for "Now Playing" movies
 app.get('/now-playing', async (req, res) => {
-  try {
-    const movies = await fetchMovies('now_playing');
-    res.render('movies', { title: 'Now Playing', movies });
-  } catch (error) {
-    console.error('Error fetching Now Playing movies:', error);
-    res.status(500).send('Server Error');
+  let mediaType = req.query.mediaType;
+  if(typeof mediaType == 'undefined' || mediaType == 'movies'){
+    try {
+      const movies = await fetchMovies('now_playing');
+      res.render('titles', { title: 'Now Playing', movies });
+    } catch (error) {
+      console.error('Error fetching Now Playing movies:', error);
+      res.status(500).send('Server Error');
+    }
+  }else if(mediaType == 'tvShows'){
+    try {
+      const tvshows = await fetchTv('on_the_air');
+      res.render('titles', { title: 'Now Playing', tvshows});
+      return;
+    } catch (error) {
+      console.error('Error fetching Now Playing TV shows:', error);
+      res.status(500).send('Server Error');
+    }
   }
 });
 
 // Route for "Popular" movies
 app.get('/popular', async (req, res) => {
-  try {
-    const movies = await fetchMovies('popular');
-    res.render('movies', { title: 'Popular Movies', movies });
-  } catch (error) {
-    console.error('Error fetching Popular movies:', error);
-    res.status(500).send('Server Error');
+  let mediaType = req.query.mediaType;
+  if(typeof mediaType == 'undefined' || mediaType == 'movies'){
+    try {
+      const movies = await fetchMovies('popular');
+      res.render('titles', { title: 'Popular', movies });
+    } catch (error) {
+      console.error('Error fetching Popular movies:', error);
+      res.status(500).send('Server Error');
+    }
+  }else if(mediaType == 'tvShows'){
+    try {
+      const tvshows = await fetchTv('popular'); 
+      res.render('titles', { title: 'Popular', tvshows});
+      return;
+    } catch (error) {
+      console.error('Error fetching Popular TV shows:', error);
+      res.status(500).send('Server Error');
+    }
   }
 });
 
 // Route for "Top Rated" movies
 app.get('/top-rated', async (req, res) => {
-  try {
-    const movies = await fetchMovies('top_rated');
-    res.render('movies', { title: 'Top Rated Movies', movies });
-  } catch (error) {
-    console.error('Error fetching Top Rated movies:', error);
-    res.status(500).send('Server Error');
+  let mediaType = req.query.mediaType;
+  if(typeof mediaType == 'undefined' || mediaType == 'movies'){
+    try {
+      const movies = await fetchMovies('top_rated');
+      res.render('titles', { title: 'Top Rated', movies });
+    } catch (error) {
+      console.error('Error fetching Top Rated movies:', error);
+      res.status(500).send('Server Error');
+    }
+  }else if(mediaType == 'tvShows'){
+    try {
+      const tvshows = await fetchTv('top_rated'); 
+      res.render('titles', { title: 'Top Rated', tvshows});
+      return;
+    } catch (error) {
+      console.error('Error fetching Top Rated TV shows:', error);
+      res.status(500).send('Server Error');
+    }
   }
 });
 
 // Route for "Upcoming" movies
 app.get('/upcoming', async (req, res) => {
-  try {
-    const movies = await fetchMovies('upcoming');
-    res.render('movies', { title: 'Upcoming Movies', movies });
-  } catch (error) {
-    console.error('Error fetching Upcoming movies:', error);
-    res.status(500).send('Server Error');
-  }
-});
-
-// route for TV shows using the user input
-app.get('/tvshows', async (req, res) => {
-    const category = req.query.category || 'popular';
+  let mediaType = req.query.mediaType;
+  if(typeof mediaType == 'undefined' || mediaType == 'movies'){
     try {
-        const tvshows = await fetchTv(category); 
-        if (category === 'popular') {
-            res.render('tvshows', { title: 'Popular TV Shows', tvshows, selectedCategory: category });
-            return;
-        }else if (category === 'top_rated') {
-            res.render('tvshows', { title: 'Top Rated TV Shows', tvshows, selectedCategory: category });
-            return;
-        }else if (category === 'on_the_air') {
-            res.render('tvshows', { title: 'On The Air TV Shows', tvshows, selectedCategory: category });
-            return;
-        }else if (category === 'airing_today') {
-            res.render('tvshows', { title: 'Airing Today TV Shows', tvshows, selectedCategory: category });
-            return;
-        }
+      const movies = await fetchMovies('upcoming');
+      res.render('titles', { title: 'Upcoming', movies });
     } catch (error) {
-        console.error('Error fetching TV shows:', error);
-        res.status(500).send('Server Error');
+      console.error('Error fetching Upcoming movies:', error);
+      res.status(500).send('Server Error');
     }
+  }else if(mediaType == 'tvShows'){
+    try {
+      const tvshows = await fetchTv('airing_today'); 
+      res.render('titles', { title: 'Upcoming', tvshows});
+      return;
+    } catch (error) {
+      console.error('Error fetching Upcoming TV shows:', error);
+      res.status(500).send('Server Error');
+    } 
+  }
 });
 
 // server port

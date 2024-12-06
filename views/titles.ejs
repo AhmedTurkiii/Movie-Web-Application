@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    
+    <%- include('partials/header') %> 
+    <h1><%= title %></h1>
+
+    <form>
+        <button name="mediaType" value="movies">Movies</button>
+        <button name="mediaType" value="tvShows">TV Shows</button>
+    </form>
+
+    <!-- will take data from index.mjs routes -->
+    <div id="data-container">
+        <% if (typeof movies != 'undefined' && movies && movies.length > 0) { %>
+            <% movies.forEach(movie => { %>
+                <div class="card">
+                    <img src="https://image.tmdb.org/t/p/w200<%= movie.poster_path %>" alt="<%= movie.title %> Poster">
+                    <h3><%= movie.title %></h3>
+                    <p><%= movie.release_date %></p>
+                    <p class="colorT"> <%= movie.vote_average %></p>
+                    <p><%= movie.overview.substring(0, 100) %>...</p> 
+                </div>
+            <% }); %>
+
+        <% } else if(typeof tvshows != 'undefined' && tvshows && tvshows.length > 0) { %>
+            <% tvshows.forEach(show => { %>
+                <div class="card">
+                    <img src="https://image.tmdb.org/t/p/w200<%= show.poster_path %>" alt="<%= show.name %> Poster">
+                    <h3><%= show.name %></h3>
+                    <p><%= show.first_air_date %></p>
+                    <p class="colorT"> <%= show.vote_average %></p>
+                    <p><%= show.overview.substring(0, 100) %>...</p>
+                </div>
+            <% }); %>
+
+        <% } else { %>
+            <p>None available.</p>
+        <% } %>
+    </div>
+
+    <%- include('partials/footer') %>
+
+</body>
+</html>
