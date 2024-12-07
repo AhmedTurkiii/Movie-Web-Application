@@ -1,6 +1,8 @@
 import express from 'express';
 import fetch from 'node-fetch';
 import dotenv from 'dotenv';
+import mysql from 'mysql2/promise';
+import session from 'express-session';
 
 dotenv.config();
 const TMDB_API_KEY="3150a1889c99611d3bcdfdc513a87194"
@@ -13,6 +15,27 @@ const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
 
+//initializing sessions
+app.set('trust proxy', 1) // trust first proxy
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true
+}))
+
+//for Express to get values using POST method
+app.use(express.urlencoded({extended:true}));
+app.use(express.json());
+// Middleware to set common variables
+app.use((req, res, next) => {
+  console.log('Middleware - Authenticated:', req.session.authenticated);  // Log authentication status
+  console.log('Middleware - Username:', req.session.username);  // Log username
+  res.locals.isLoggedIn = req.session.authenticated || false;
+  res.locals.username = req.session.username || '';
+  next();
+});
+
+
 const pool = mysql.createPool({
   host: "eric-rios.tech",
   user: "ericrios_webuser",
@@ -21,7 +44,6 @@ const pool = mysql.createPool({
   connectionLimit: 10,
   waitForConnections: true
 });
-const conn = await pool.getConnection();
 
 // fetch data from the TMDB API and return it in an array
 async function fetchMovies(category) {
@@ -43,7 +65,6 @@ app.get('/', async (req, res) => {
       res.render('index');
     } catch (error) {
         console.error('Error home:', error);
-
   }
 });
 
@@ -113,6 +134,44 @@ app.get('/tvshows', async (req, res) => {
         console.error('Error fetching TV shows:', error);
         res.status(500).send('Server Error');
     }
+});
+
+app.get('/login', (req, res) => {
+   res.render('login');
+});
+
+app.post('/login', async (req, res) => {
+  let username = req.body.username;
+  let password = req.body.password;
+  console.log(password);
+  let sql = `SELECT * 
+             FROM user
+             WHERE username = ? AND password = ?`;
+  try {
+    const connection = await pool.getConnection();
+    const [rows] = await connection.query(sql, [username, password]);
+    connection.release();
+
+    if (rows.length > 0) {
+      req.session.authenticated = true;
+      req.session.username = username;
+      res.render('index', {isLoggedIn: req.session.authenticated, username: req.session.username});
+    } else {
+      res.redirect('/login');
+    }
+  } catch (error) {
+    console.error("Error during login: ", error);
+    res.status(500).send("Server Error");
+  }
+});
+
+app.get('/signup', (req, res) => { 
+  res.render('signup');
+});
+
+app.get('/logout', (req, res) => {
+  req.session.destroy();
+  res.redirect('/')
 });
 
 // server port

@@ -7,7 +7,12 @@
             <li><a href="/top-rated">Top Rated</a></li>
             <li><a href="/upcoming">Upcoming</a></li>
             <li><a href="/tvshows">TV Shows</a></li> 
-
+            <% if (isLoggedIn) { %> 
+                <li><a href="/logout"> Logout </a></li>
+            <% } else { %>
+                <li><a href="/login">Login</a></li> 
+                <li><a href="/signup">Sign Up</a></li>
+            <% } %>
         </ul>
     </nav>
 </header>
