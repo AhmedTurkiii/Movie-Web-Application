@@ -1,67 +1,188 @@
-header {
-    background: #333;
-    color: white;
-    padding: 10px 0;
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  text-align: center;
+}
+
+#data-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Default to 3 cards per row */
+  gap: 20px;
+  padding: 20px;
+}
+
+/* For smaller screens, show 2 cards per row */
+@media (max-width: 768px) {
+  #data-container {
+      grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* For even smaller screens, show 1 card per row */
+@media (max-width: 480px) {
+  #data-container {
+      grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  text-align: center;
+  transition: transform 0.3s;
+}
+
+.card:hover {
+  transform: scale(1.05); 
+}
+
+.card img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+.colorT{
+  color: #6adb1f;
+}
+
+/* ----------------- */
+
+h1 {
+  font-size: 3rem;
+  font-weight: bold;
+  text-align: center;
+  margin: 20px 0;
+  background: linear-gradient(90deg, #007bff, #00c853);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  position: relative;
+}
+
+h1::after {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 4px;
+  background-color: #007bff;
+  margin: 10px auto 0;
+  border-radius: 4px;
+}
+
+input, textarea, select {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+textarea {
+  height: 150px;
+  resize: vertical;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+button {
+  background-color: #6ad26a;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 150px;
+  height: 75px; 
+}
+
+button:hover {
+  background-color: #5700b3;
+}
+
+
+nav {
+  text-align: center;
+  margin-top: 20px;
 }
 
 nav ul {
-    list-style-type: none;
-    padding: 0;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 0;
+  list-style-type: none;
 }
 
 nav ul li {
-    display: inline;
-    margin-right: 20px;
+  width: 150px;
+  height: 30px; /* Increase the height to make sure there’s enough space for vertical centering */
+  display: flex;
+  align-items: center; /* Center the text vertically */
+  justify-content: center; /* Center the text horizontally */
+  background-color: #007bff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
 }
 
-nav a {
-    color: white;
-    text-decoration: none;
+nav ul li:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+nav ul li a:hover {
+  color: #f0f0f0;
 }
 
 
-footer {
-    text-align: center;
-    padding: 10px 0;
-    background: #333;
-    color: white;
+h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #333; 
+  text-align: center;
+  margin: 20px 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  position: relative;
 }
 
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-  }
-  
-  h1 {
-    text-align: center;
-  }
-  
-  #data-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px; 
-    padding: 20px; 
-  }
-  
-  .card {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 10px;
-    background-color: #f9f9f9;
-    text-align: center;
-    transition: transform 0.3s;
-  }
-  
-  .card:hover {
-    transform: scale(1.05); 
-  }
-  
-  .card img {
-    max-width: 100%;
-    border-radius: 8px;
-  }
-  
-  .colorT{
-    color: #6adb1f;
-  }
+h2::before, h2::after {
+  content: '';
+  display: block;
+  width: 50px;
+  height: 3px;
+  background-color: #007bff; 
+  margin: 10px auto;
+}
+
+h2::before {
+  margin-bottom: 5px;
+}
+
+h2::after {
+  margin-top: 5px;
+}
