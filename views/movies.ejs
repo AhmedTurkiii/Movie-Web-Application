@@ -14,11 +14,13 @@
         <% if (movies && movies.length > 0) { %>
             <% movies.forEach(movie => { %>
                 <div class="card">
-                    <img src="https://image.tmdb.org/t/p/w200<%= movie.poster_path %>" alt="<%= movie.title %> Poster">
-                    <h3><%= movie.title %></h3>
-                    <p><%= movie.release_date %></p>
-                    <p class="colorT"> <%= movie.vote_average %></p>
-                    <p><%= movie.overview.substring(0, 100) %>...</p> 
+                    <a href="/movie/<%= movie.id %>">
+                        <img src="https://image.tmdb.org/t/p/w200<%= movie.poster_path %>" alt="<%= movie.title %> Poster">
+                        <h3><%= movie.title %></h3>
+                        <p><%= movie.release_date %></p>
+                        <p class="colorT"><%= movie.vote_average %></p>
+                        <p><%= movie.overview.substring(0, 100) %>...</p>
+                    </a>
                 </div>
             <% }); %>
         <% } else { %>
@@ -29,3 +31,4 @@
     <%- include('partials/footer') %>
 </body>
 </html>
+

@@ -35,7 +35,6 @@ app.use((req, res, next) => {
   next();
 });
 
-
 const pool = mysql.createPool({
   host: "eric-rios.tech",
   user: "ericrios_webuser",
@@ -136,6 +135,26 @@ app.get('/tvshows', async (req, res) => {
     }
 });
 
+app.get('/movie/:id', async (req, res) => {
+  const movieId = req.params.id;
+  const url = `${TMDB_BASE_URL}/movie/${movieId}?api_key=${TMDB_API_KEY}&language=en-US&append_to_response=credits,videos`;
+
+  try {
+    const response = await fetch(url);
+    const movie = await response.json();
+    const director = movie.credits.crew.find(person => person.job === 'Director');
+    const writer = movie.credits.crew.find(person => person.job === 'Writer');
+    const trailer = movie.videos.results.find(video => video.type === 'Trailer');
+
+    res.render('movieDetail', { movie, director, writer, trailer });
+  } catch (error) {
+    console.error('Error fetching movie details:', error);
+    res.status(500).send('Server Error');
+  }
+});
+
+
+
 app.get('/login', (req, res) => {
    res.render('login');
 });
@@ -167,6 +186,33 @@ app.post('/login', async (req, res) => {
 
 app.get('/signup', (req, res) => { 
   res.render('signup');
+});
+
+app.post('/signup', async (req, res) => { 
+  let username = req.body.username;
+  let password = req.body.password;
+  console.log(password);
+  let sqlCheck = `SELECT * 
+             FROM user
+             WHERE username = ?`;
+  let sqlInsert = `INSERT into user (username, password)
+                   VALUES (?, ?)`;
+  try {
+    const connection = await pool.getConnection();
+    const [existingUser] = await connection.query(sqlCheck, [username]);
+    if (existingUser.length > 0) {
+      res.send("Username already exists");
+    } else {
+      await connection.query(sqlInsert, [username, password]);
+      req.session.authenticated = true;
+      req.session.username = username;
+      res.render('index', {isLoggedIn: req.session.authenticated, username: req.session.username});
+    }
+    connection.release();
+  } catch (error) {
+    console.error("Error during signup:", error); 
+    res.status(500).send("Server Error");
+  }
 });
 
 app.get('/logout', (req, res) => {
