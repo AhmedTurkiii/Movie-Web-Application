@@ -1,6 +1,9 @@
 import express, { text } from 'express';
 import fetch from 'node-fetch';
 import dotenv from 'dotenv';
+import mysql from 'mysql2/promise';
+import session from 'express-session';
+
 
 dotenv.config();
 const TMDB_API_KEY="3150a1889c99611d3bcdfdc513a87194"
@@ -22,6 +25,15 @@ const pool = mysql.createPool({
   waitForConnections: true
 });
 const conn = await pool.getConnection();
+
+// intializing sessions using 
+app.set('trust proxy', 1) // trust first proxy
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true
+}))
+
 
 // fetch data from the TMDB API and return it in an array
 async function fetchMovies(category) {
@@ -138,6 +150,58 @@ app.get('/upcoming', async (req, res) => {
     } 
   }
 });
+
+//routes for login / register / logout
+
+app.get('/logout', (req, res) => {
+  req.session.destroy();
+  res.redirect('/')
+});
+
+app.get('/login', (req, res) => {
+  res.render('login');
+}
+);
+
+app.get('/register', (req, res) => {
+  res.render('register');
+}
+);
+
+app.post('/login', async (req, res) => {
+
+  let username = req.body.username;
+  let password = req.body.password;
+  console.log(password);
+
+  let sql = `SELECT * FROM admin WHERE username = ?;`;
+  let sqlParams = [username];
+  const [rows] = await conn.query(sql, sqlParams);
+
+  let passwordHash = "";
+  if (rows.length > 0){ // it found at least one record that means the user name and password is equal to what we have in the database
+      passwordHash = rows[0].password;
+  }
+  let match = await bcrypt.compare(password, passwordHash);
+  console.log(match);
+  console.log(password, passwordHash);
+
+  if(match){
+      req.session.auth = true;
+      req.session.fullName = rows[0].firstName + " " + rows[0].lastName ;
+      res.render('welcome')
+  }else{
+      res.redirect('/')
+  }
+});
+// Middleware function for checking if user is authenticated
+function isAuthenticated(req, res, next){
+  if(req.session.auth){
+      next();
+  }else{
+      res.redirect("/");
+  }
+}
 
 // server port
 app.listen(PORT, () => {
