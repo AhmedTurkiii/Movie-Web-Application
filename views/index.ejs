@@ -13,6 +13,15 @@
     <% if (isLoggedIn) { %> 
         <p>Welcome back, <%= username %>! Enjoy browsing!</p> 
     <% } %>
+
+    <form action="/search">
+        Search by title:
+        <input type="text" name="title">
+        <input type="radio" name="mediaType" value="movie" checked>Movies
+        <input type="radio" name="mediaType" value="tv">TV Shows <br>
+        <button>Search</button><br>
+    </form>
+    
     <p>Select a category from the navigation menu above.</p>
 
     <%- include('partials/footer') %> 
