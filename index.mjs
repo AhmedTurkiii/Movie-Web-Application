@@ -50,12 +50,45 @@ async function fetchTv(category) {
     return data.results; // array of tv shows
   }
 
+async function searchByTitle(mediaType, title){
+  const url = `${TMDB_BASE_URL}/search/${mediaType}?api_key=${TMDB_API_KEY}&query=${title}&language=en-US&page=1`
+  const response = await fetch(url);
+  const data = await response.json();
+  console.log(url);
+  return data.results;
+}
+
 app.get('/', async (req, res) => {
     try {
       res.render('index');
     } catch (error) {
         console.error('Error home:', error);
 
+  }
+});
+
+// Route for "Now Playing" movies
+app.get('/search', async (req, res) => {
+  let mediaType = req.query.mediaType;
+  let title = req.query.title;
+  
+  if(typeof mediaType == 'undefined' || mediaType == 'movie'){
+    try {
+      const movies = await searchByTitle(mediaType, title);
+      res.render('search', { title: `Results for search: ${title}`, movies });
+    } catch (error) {
+      console.error('Error while searching:', error);
+      res.status(500).send('Server Error');
+    }
+  }else if(mediaType == 'tv'){
+    try {
+      const tvshows = await searchByTitle(mediaType, title);
+      res.render('search', { title: `Results for search: ${title}`, tvshows});
+      return;
+    } catch (error) {
+      console.error('Error while searching:', error);
+      res.status(500).send('Server Error');
+    }
   }
 });
 
