@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { text } from 'express';
 import fetch from 'node-fetch';
 import dotenv from 'dotenv';
 import mysql from 'mysql2/promise';
@@ -44,6 +44,15 @@ const pool = mysql.createPool({
   waitForConnections: true
 });
 
+// intializing sessions using 
+app.set('trust proxy', 1) // trust first proxy
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true
+}))
+
+
 // fetch data from the TMDB API and return it in an array
 async function fetchMovies(category) {
   const url = `${TMDB_BASE_URL}/movie/${category}?api_key=${TMDB_API_KEY}&language=en-US&page=1`;
@@ -58,6 +67,7 @@ async function fetchTv(category) {
     const data = await response.json();
     return data.results; // array of tv shows
   }
+
 
   async function searchByTitle(mediaType, title){
     const url = `${TMDB_BASE_URL}/search/${mediaType}?api_key=${TMDB_API_KEY}&query=${title}&language=en-US&page=1`
@@ -75,6 +85,31 @@ app.get('/', async (req, res) => {
   }
 });
 
+app.get('/search', async (req, res) => {
+  let mediaType = req.query.mediaType;
+  let title = req.query.title;
+  
+  if(typeof mediaType == 'undefined' || mediaType == 'movie'){
+    try {
+      const movies = await searchByTitle(mediaType, title);
+      res.render('search', { title: `Results for search: ${title}`, movies });
+    } catch (error) {
+      console.error('Error while searching:', error);
+      res.status(500).send('Server Error');
+    }
+  }else if(mediaType == 'tv'){
+    try {
+      const tvshows = await searchByTitle(mediaType, title);
+      res.render('search', { title: `Results for search: ${title}`, tvshows});
+      return;
+    } catch (error) {
+      console.error('Error while searching:', error);
+      res.status(500).send('Server Error');
+    }
+  }
+});
+
+// Route for "Now Playing" movies
 app.get('/search', async (req, res) => {
   let mediaType = req.query.mediaType;
   let title = req.query.title;
@@ -291,10 +326,56 @@ app.post('/signup', async (req, res) => {
   }
 });
 
+
 app.get('/logout', (req, res) => {
   req.session.destroy();
   res.redirect('/')
 });
+
+app.get('/login', (req, res) => {
+  res.render('login');
+}
+);
+
+app.get('/register', (req, res) => {
+  res.render('register');
+}
+);
+
+app.post('/login', async (req, res) => {
+
+  let username = req.body.username;
+  let password = req.body.password;
+  console.log(password);
+
+  let sql = `SELECT * FROM admin WHERE username = ?;`;
+  let sqlParams = [username];
+  const [rows] = await conn.query(sql, sqlParams);
+
+  let passwordHash = "";
+  if (rows.length > 0){ // it found at least one record that means the user name and password is equal to what we have in the database
+      passwordHash = rows[0].password;
+  }
+  let match = await bcrypt.compare(password, passwordHash);
+  console.log(match);
+  console.log(password, passwordHash);
+
+  if(match){
+      req.session.auth = true;
+      req.session.fullName = rows[0].firstName + " " + rows[0].lastName ;
+      res.render('welcome')
+  }else{
+      res.redirect('/')
+  }
+});
+// Middleware function for checking if user is authenticated
+function isAuthenticated(req, res, next){
+  if(req.session.auth){
+      next();
+  }else{
+      res.redirect("/");
+  }
+}
 
 // server port
 app.listen(PORT, () => {
