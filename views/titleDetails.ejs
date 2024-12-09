@@ -11,20 +11,28 @@
 
     <h1><%= mediaType === 'movie' ? media.title : media.name %></h1>
     <div class="media-detail">
-        <img src="https://image.tmdb.org/t/p/w300<%= media.poster_path %>" alt="<%= mediaType === 'movie' ? media.title : media.name %> Poster">
-        <p><strong>Release Date:</strong> <%= mediaType === 'movie' ? media.release_date : media.first_air_date %></p>
-        <p><strong>Rating:</strong> <%= media.vote_average %></p>
-        <p><strong>Overview:</strong> <%= media.overview %></p>
-        <% if (director) { %>
-            <p><strong>Director:</strong> <%= director.name %></p>
-        <% } %>
-        <% if (writer) { %>
-            <p><strong>Writer:</strong> <%= writer.name %></p>
-        <% } %>
-        <% if (trailer) { %>
-            <p><strong>Trailer:</strong></p>
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/<%= trailer.key %>" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        <% } %>
+        <div class="basicInfo">
+            <div class="poster">
+                <img src="https://image.tmdb.org/t/p/w300<%= media.poster_path %>" alt="<%= mediaType === 'movie' ? media.title : media.name %> Poster">
+            </div>
+            <div class="info">
+                <p><strong>Release Date:</strong> <%= mediaType === 'movie' ? media.release_date : media.first_air_date %></p>
+                <p><strong>Rating:</strong> <%= media.vote_average %></p>
+                <% if (director) { %>
+                    <p><strong>Director:</strong> <%= director.name %></p>
+                <% } %>
+                <% if (writer) { %>
+                    <p><strong>Writer:</strong> <%= writer.name %></p>
+                <% } %>
+            </div>
+        </div>
+        <div class="overviewAndTrailer">
+            <% if (trailer) { %>
+                <p><strong>Trailer:</strong></p>
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/<%= trailer.key %>" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <% } %>
+            <p><strong>Overview:</strong> <%= media.overview %></p>
+        </div>
     </div>
 
     <%- include('partials/footer') %>
