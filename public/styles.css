@@ -1,7 +1,6 @@
 body {
   font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0px 30px 20px 30px; /* top, right, bottom, left */
+  margin: 0px;
 }
 
 h1 {
@@ -89,6 +88,10 @@ input, textarea, select {
   box-sizing: border-box;
 }
 
+.radio{
+  width: auto;
+}
+
 textarea {
   height: 150px;
   resize: vertical;
@@ -110,7 +113,6 @@ button {
   cursor: pointer;
   transition: background-color 0.3s ease;
   width: 150px;
-  height: 75px; 
 }
 
 button:hover {
@@ -159,6 +161,36 @@ nav ul li a {
 
 nav ul li a:hover {
   color: #f0f0f0;
+}
+
+.media-detail{
+  display: flex;
+  justify-content:space-around;
+  text-align: center;
+  align-items: center;
+}
+
+.overviewAndTrailer{
+  width: 50%;
+  background-color: aliceblue;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: fit-content;
+}
+
+iframe{
+  width: 80%;;
+}
+
+.overviewAndTrailer p{
+  width: 80%;
+}
+
+.basicInfo{
+  display: flex;
+  flex-direction: column;
+  background-color: aliceblue;
 }
 
 
