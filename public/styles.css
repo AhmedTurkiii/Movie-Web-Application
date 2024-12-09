@@ -137,6 +137,7 @@ nav ul {
 nav ul li {
   width: 150px;
   height: 30px; /* Increase the height to make sure there’s enough space for vertical centering */
+  min-height: fit-content;
   display: flex;
   align-items: center; /* Center the text vertically */
   justify-content: center; /* Center the text horizontally */
