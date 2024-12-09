@@ -3,6 +3,7 @@ import fetch from 'node-fetch';
 import dotenv from 'dotenv';
 import mysql from 'mysql2/promise';
 import session from 'express-session';
+import bcrypt from 'bcrypt';
 
 dotenv.config();
 const TMDB_API_KEY="3150a1889c99611d3bcdfdc513a87194"
@@ -531,19 +532,23 @@ app.post('/login', async (req, res) => {
   console.log(password);
   let sql = `SELECT * 
              FROM user
-             WHERE username = ? AND password = ?`;
+             WHERE username = ?`;
   try {
     const connection = await pool.getConnection();
-    const [rows] = await connection.query(sql, [username, password]);
-    connection.release();
+    const [rows] = await connection.query(sql, [username]);
+
     if (rows.length > 0) {
+      let passwordHash = rows[0].password;
+      const match = await bcrypt.compare(password, passwordHash);
+      console.log(match);
+      if (match) {
       req.session.authenticated = true;
       req.session.username = username;
-      req.session.userId = rows[0].userId;
-      console.log('User authenticated:', req.session);
       res.redirect('/');
-    } else {
-      res.redirect('/login');
+      } else {
+        res.send("Invalid username or password");
+        res.redirect('/login');
+      }
     }
   } catch (error) {
     console.error("Error during login: ", error);
@@ -558,26 +563,27 @@ app.get('/signup', (req, res) => {
 app.post('/signup', async (req, res) => { 
   let username = req.body.username;
   let password = req.body.password;
-  let sqlCheck = `SELECT * FROM user WHERE username = ?`;
-  let sqlInsert = `INSERT INTO user (username, password) VALUES (?, ?)`;
-  let sqlGetUserId = `SELECT userId FROM user WHERE username = ?`;
+  console.log(password);
+  let sqlCheck = `SELECT * 
+             FROM user
+             WHERE username = ?`;
+  let sqlInsert = `INSERT into user (username, password)
+                   VALUES (?, ?)`;
   try {
     const connection = await pool.getConnection();
     const [existingUser] = await connection.query(sqlCheck, [username]);
     if (existingUser.length > 0) {
-      res.json({ success: false, message: "Username already exists" });
+      res.send("Username already exists");
     } else {
-      await connection.query(sqlInsert, [username, password]);
-      const [userRows] = await connection.query(sqlGetUserId, [username]);
+      const hashedPassword = await bcrypt.hash(password, 10);
+      await connection.query(sqlInsert, [username, hashedPassword]);
       req.session.authenticated = true;
       req.session.username = username;
-      req.session.userId = userRows[0].userId; // Set the userId in session
-      res.json({ success: true, redirectUrl: '/' });
+      res.redirect('/');
     }
-    connection.release();
   } catch (error) {
     console.error("Error during signup:", error); 
-    res.status(500).json({ success: false, message: "Server Error" });
+    res.status(500).send("Server Error");
   }
 });
 
@@ -597,32 +603,32 @@ app.get('/register', (req, res) => {
 }
 );
 
-app.post('/login', async (req, res) => {
+// app.post('/login', async (req, res) => {
 
-  let username = req.body.username;
-  let password = req.body.password;
-  console.log(password);
+//   let username = req.body.username;
+//   let password = req.body.password;
+//   console.log(password);
 
-  let sql = `SELECT * FROM admin WHERE username = ?;`;
-  let sqlParams = [username];
-  const [rows] = await conn.query(sql, sqlParams);
+//   let sql = `SELECT * FROM admin WHERE username = ?;`;
+//   let sqlParams = [username];
+//   const [rows] = await conn.query(sql, sqlParams);
 
-  let passwordHash = "";
-  if (rows.length > 0){ // it found at least one record that means the user name and password is equal to what we have in the database
-      passwordHash = rows[0].password;
-  }
-  let match = await bcrypt.compare(password, passwordHash);
-  console.log(match);
-  console.log(password, passwordHash);
+//   let passwordHash = "";
+//   if (rows.length > 0){ // it found at least one record that means the user name and password is equal to what we have in the database
+//       passwordHash = rows[0].password;
+//   }
+//   let match = await bcrypt.compare(password, passwordHash);
+//   console.log(match);
+//   console.log(password, passwordHash);
 
-  if(match){
-      req.session.auth = true;
-      req.session.fullName = rows[0].firstName + " " + rows[0].lastName ;
-      res.render('welcome')
-  }else{
-      res.redirect('/')
-  }
-});
+//   if(match){
+//       req.session.auth = true;
+//       req.session.fullName = rows[0].firstName + " " + rows[0].lastName ;
+//       res.render('welcome')
+//   }else{
+//       res.redirect('/')
+//   }
+// });
 // Middleware function for checking if user is authenticated
 function isAuthenticated(req, res, next){
   if(req.session.auth){
