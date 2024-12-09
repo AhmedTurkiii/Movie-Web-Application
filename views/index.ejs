@@ -10,6 +10,7 @@
     <%- include('partials/header') %> 
 
     <h1>Welcome to My Movie App</h1>
+    
     <% if (isLoggedIn) { %> 
         <p>Welcome back, <%= username %>! Enjoy browsing!</p>
         <button onclick="window.location.href='/lists'">View Your Lists</button>
@@ -36,7 +37,7 @@
         <input type="radio" name="mediaType" value="tv">TV Shows <br>
         <button>Search</button><br>
     </form>
-    
+
     <p>Select a category from the navigation menu above.</p>
 
     <%- include('partials/footer') %> 
