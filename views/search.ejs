@@ -12,10 +12,16 @@
     <h1><%= title %></h1>
 
     <form action="/search">
-        Search by title:
-        <input type="text" name="title">
-        <input type="radio" name="mediaType" value="movie" checked>Movies
-        <input type="radio" name="mediaType" value="tv">TV Shows <br>
+        <label>
+            Search by title:
+            <input type="text" name="title">
+        </label>
+        <label>
+            <input type="radio" name="mediaType" value="movie" class="radio" checked>Movies
+        </label>
+        <label>
+            <input type="radio" name="mediaType" value="tv" class="radio">TV Shows <br>
+        </label>
         <button>Search</button><br>
     </form>
 
