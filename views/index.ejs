@@ -12,14 +12,35 @@
     <h1>Welcome to My Movie App</h1>
     
     <% if (isLoggedIn) { %> 
-        <p>Welcome back, <%= username %>! Enjoy browsing!</p> 
+        <p>Welcome back, <%= username %>! Enjoy browsing!</p>
+        <button onclick="window.location.href='/lists'">View Your Lists</button>
+
+        <h2>Your Liked Lists:</h2>
+        <div id="liked-lists-container">
+            <% if (likedLists && likedLists.length > 0) { %>
+                <% likedLists.forEach(list => { %>
+                    <div class="list-card">
+                        <h3><%= list.listName %> by <%= list.username %></h3>
+                        <a href="/lists/<%= list.listId %>">View List</a>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <p>You haven't liked any lists yet.</p>
+            <% } %>
+        </div>
     <% } %>
 
     <form action="/search">
-        Search by title:
-        <input type="text" name="title">
-        <input type="radio" name="mediaType" value="movie" checked>Movies
-        <input type="radio" name="mediaType" value="tv">TV Shows <br>
+        <label>
+            Search by title:
+            <input type="text" name="title">
+        </label>
+        <label>
+            <input type="radio" name="mediaType" value="movie" class="radio" checked>Movies
+        </label>
+        <label>
+            <input type="radio" name="mediaType" value="tv" class="radio">TV Shows <br>
+        </label>
         <button>Search</button><br>
     </form>
 
@@ -29,3 +50,4 @@
     <script src="/app.js"></script>
 </body>
 </html>
+

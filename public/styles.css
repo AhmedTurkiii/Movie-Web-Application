@@ -1,234 +1,214 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Arial', sans-serif;
+  background-color: #121212;
+  color: #e0e0e0;
   margin: 0;
-  padding: 0px 30px 20px 30px; /* top, right, bottom, left */
+  padding: 0;
+  display: flex;
+  align-items: center;
+  min-height: 100vh;
+  flex-direction: column;
 }
 
-h1 {
-  text-align: center;
-}
-
-#data-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Default to 3 cards per row */
-  gap: 20px;
-  padding: 20px;
-}
-
-/* For smaller screens, show 2 cards per row */
-@media (max-width: 768px) {
-  #data-container {
-      grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* For even smaller screens, show 1 card per row */
-@media (max-width: 480px) {
-  #data-container {
-      grid-template-columns: 1fr;
-  }
-}
-
-.card {
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 10px;
-  background-color: #f9f9f9;
-  text-align: center;
-  transition: transform 0.3s;
-}
-
-.card:hover {
-  transform: scale(1.05); 
-}
-
-.card img {
-  max-width: 60%; /* Ensure the image never exceeds the card's width */
-  height: auto; /* Maintain aspect ratio */
-  border-radius: 8px; /* Keep the border radius for rounded corners */
-  object-fit: cover; /* Make the image fill the card area, while maintaining aspect ratio */
-  width: 100%; /* Make the image take up the full width of the card */
-}
-.colorT{
-  color: #6adb1f;
-}
-
-/* ----------------- */
-
-h1 {
-  font-size: 3rem;
-  font-weight: bold;
-  text-align: center;
-  margin: 20px 0;
-  background: linear-gradient(90deg, #007bff, #00c853);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  position: relative;
-}
-
-h1::after {
-  content: '';
-  display: block;
-  width: 80px;
-  height: 4px;
-  background-color: #007bff;
-  margin: 10px auto 0;
-  border-radius: 4px;
-}
-
-input, textarea, select {
+.container {
+  max-width: 1200px;
   width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-  background-color: #fff;
-  box-sizing: border-box;
+  padding: 20px;
+  text-align: center; 
 }
 
-textarea {
-  height: 150px;
-  resize: vertical;
-}
-
-input:focus, textarea:focus, select:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-}
-
-button {
-  background-color: #6ad26a;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  width: 150px;
-  height: 75px; 
-}
-
-button:hover {
-  background-color: #5700b3;
-}
-
-
-nav {
-  text-align: center;
-  margin-top: 20px;
-  margin-bottom: 20px;
+/* Navigation Bar */
+header {
+  background-color: #1f1f1f;
+  padding: 10px 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 nav ul {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  padding: 30;
   list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 nav ul li {
-  width: 150px;
-  height: 30px; /* Increase the height to make sure there’s enough space for vertical centering */
-  display: flex;
-  align-items: center; /* Center the text vertically */
-  justify-content: center; /* Center the text horizontally */
-  background-color: #007bff;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
-}
-
-nav ul li:hover {
-  background-color: #0056b3;
-  transform: scale(1.05);
+  margin-right: 20px;
 }
 
 nav ul li a {
-  color: white;
+  color: #f0f0f0; 
   text-decoration: none;
-  font-size: 1.2rem;
-  font-weight: 500;
-  text-align: center;
+  font-weight: bold;
 }
 
 nav ul li a:hover {
-  color: #f0f0f0;
+  color: #e0e0e0; 
 }
 
+.media-info {
+  display: flex;
+  align-items: flex-start; 
+  gap: 20px;
+  justify-content: center; 
+}
 
-h2 {
-  font-size: 2rem;
-  font-weight: 600;
-  color: #333; 
+.media-info img {
+  border-radius: 8px;
+}
+
+.info {
+  text-align: left; 
+}
+
+h1 {
+  font-size: 2.5em;
+  margin-bottom: 10px;
+  color: #f0f0f0; 
+  text-align: center; 
+}
+
+p {
+  font-size: 1.2em;
+  margin-bottom: 20px;
+  text-align: center; 
+  color: #ccc;
+}
+
+a {
+  color: #ffffff;
+}
+
+.primary-btn {
+  background-color: #007BFF;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  display: block; 
+  margin: 20px auto; 
+}
+
+.primary-btn:hover {
+  background-color: #0056b3;
+}
+
+.liked-lists {
+  margin-top: 30px;
+  text-align: center; 
+}
+
+#liked-lists-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; 
+  gap: 20px;
+}
+
+.list-card {
+  background: #1e1e1e;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 250px;
   text-align: center;
-  margin: 20px 0;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  position: relative;
 }
 
-h2::before, h2::after {
-  content: '';
-  display: block;
-  width: 50px;
-  height: 3px;
-  background-color: #007bff; 
-  margin: 10px auto;
+.list-card h3 {
+  margin: 0 0 10px 0;
+  color: #f0f0f0; 
 }
 
-h2::before {
-  margin-bottom: 5px;
+.view-list-btn {
+  background-color: #ff6f61;
+  color: #fff;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
 }
 
-h2::after {
-  margin-top: 5px;
-}
-footer {
-  background-color: #333; /* Dark background color */
-  color: white; /* White text */
-  text-align: center; /* Center-align the text */
-  padding: 20px 0; /* Add padding at the top and bottom */
-  font-size: 1.2rem; /* Slightly larger text size */
-  position: relative; /* Keep it in place */
-  bottom: 0; /* Ensure it stays at the bottom */
-  width: 100%; /* Ensure it spans the full width */
-  margin-top: 30px; /* Add some space above it */
+.view-list-btn:hover {
+  background-color: #ff3f3f;
 }
 
-footer p {
-  margin: 0; /* Remove default margin */
-  font-family: 'Arial', sans-serif; /* Set the font */
+
+form {
+  margin-top: 30px;
+  text-align: center; 
+  background: #1e1e1e;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: inline-block;
+  margin: 0 auto; 
 }
 
-footer a {
-  color: #6adb1f; /* Greenish link color */
-  text-decoration: none; /* Remove underline */
-  font-weight: bold; /* Make the link text bold */
-  transition: color 0.3s; /* Smooth transition for hover effect */
+form h2 {
+  margin-bottom: 10px;
+  color: #f0f0f0; 
 }
 
-footer a:hover {
-  color: #00c853; /* Change color on hover */
+form input[type="text"], form input[type="radio"] {
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #333;
+  color: #fff;
 }
 
-footer .social-icons {
-  margin-top: 15px;
+form button {
+  background-color: #007BFF;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
 }
 
-footer .social-icons a {
-  color: white; /* Set icons to white */
-  margin: 0 10px; /* Space them out */
-  font-size: 1.5rem; /* Make the icons bigger */
-  text-decoration: none; /* Remove underline */
-  transition: color 0.3s; /* Smooth transition for hover effect */
+form button:hover {
+  background-color: #0056b3;
 }
 
-footer .social-icons a:hover {
-  color: #00c853; /* Change color on hover */
+#data-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; 
+  gap: 20px;
+}
+
+.card {
+  background: #1e1e1e;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 200px;
+  text-align: center;
+}
+
+.card img {
+  border-radius: 4px;
+  width: 100%;
+  height: auto;
+}
+
+.card h3 {
+  color: #f0f0f0; 
+  margin: 10px 0;
+}
+
+.card p {
+  margin: 5px 0;
+}
+
+.titles form {
+  text-align: center; 
 }

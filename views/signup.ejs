@@ -10,19 +10,50 @@
     <%- include('partials/header') %> 
 
     <h1>Sign Up</h1>
-    <form action="/signup" method="POST">
 
+    <div id="error-message" style="color: red;"></div>
+    <form id="signup-form">
         Enter a Username:
-        <input type="text" name="username"><br>
+        <input type="text" id="username" name="username"><br>
 
         Enter a Password:
-        <input type="password" name="password"><br>
+        <input type="password" id="password" name="password"><br>
 
-        <button> Signup </button>
-
+        <button type="submit">Signup</button>
     </form>
 
     <%- include('partials/footer') %> 
-    <script src="/app.js"></script>
+    <script>
+        document.getElementById('signup-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the form from submitting the traditional way
+
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+            var errorMessage = document.getElementById('error-message');
+
+            if (password.length < 4) {
+                errorMessage.textContent = 'Password must be at least 4 characters long.';
+                return;
+            }
+
+            fetch('/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username: username, password: password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = data.redirectUrl;
+                } else {
+                    errorMessage.textContent = data.message;
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
 </body>
 </html>
+

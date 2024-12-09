@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= list.listName %></title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <h1><%= list.listName %> by <%= list.username %></h1>
+    <div class="list-detail">
+        <h2>Items in this list:</h2>
+        <div id="data-container">
+            <% if (movieDetails.length > 0) { %>
+                <% movieDetails.forEach(movie => { %>
+                    <div class="card">
+                        <a href="/movies/<%= movie.id %>">
+                            <img src="https://image.tmdb.org/t/p/w200<%= movie.poster_path %>" alt="<%= movie.title %> Poster">
+                            <h3><%= movie.title %></h3>
+                            <p><%= movie.release_date %></p>
+                            <p class="colorT"><%= movie.vote_average %></p>
+                            <p><%= movie.overview.substring(0, 100) %>...</p>
+                        </a>
+                    </div>
+                <% }); %>
+            <% } %>
+            <% if (tvShowDetails.length > 0) { %>
+                <% tvShowDetails.forEach(show => { %>
+                    <div class="card">
+                        <a href="/tvshows/<%= show.id %>">
+                            <img src="https://image.tmdb.org/t/p/w200<%= show.poster_path %>" alt="<%= show.name %> Poster">
+                            <h3><%= show.name %></h3>
+                            <p><%= show.first_air_date %></p>
+                            <p class="colorT"><%= show.vote_average %></p>
+                            <p><%= show.overview.substring(0, 100) %>...</p>
+                        </a>
+                    </div>
+                <% }); %>
+            <% } %>
+            <% if (movieDetails.length === 0 && tvShowDetails.length === 0) { %>
+                <p>No items available in this list.</p>
+            <% } %>
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>
+</body>
+</html>
+
+

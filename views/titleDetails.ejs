@@ -9,25 +9,60 @@
 <body>
     <%- include('partials/header') %>
 
-    <h1><%= mediaType === 'movie' ? media.title : media.name %></h1>
-    <div class="media-detail">
-        <img src="https://image.tmdb.org/t/p/w300<%= media.poster_path %>" alt="<%= mediaType === 'movie' ? media.title : media.name %> Poster">
-        <p><strong>Release Date:</strong> <%= mediaType === 'movie' ? media.release_date : media.first_air_date %></p>
-        <p><strong>Rating:</strong> <%= media.vote_average %></p>
-        <p><strong>Overview:</strong> <%= media.overview %></p>
-        <% if (director) { %>
-            <p><strong>Director:</strong> <%= director.name %></p>
+    <div class="container">
+        <div class="media-detail">
+            <div class="media-info">
+                <img src="https://image.tmdb.org/t/p/w300<%= media.poster_path %>" alt="<%= mediaType === 'movie' ? media.title : media.name %> Poster">
+                <div class="info">
+                    <h1><%= mediaType === 'movie' ? media.title : media.name %></h1>
+                    <p><strong>Release Date:</strong> <%= mediaType === 'movie' ? media.release_date : media.first_air_date %></p>
+                    <p><strong>Rating:</strong> <%= media.vote_average %></p>
+                    <% if (director) { %>
+                        <p><strong>Director:</strong> <%= director.name %></p>
+                    <% } %>
+                    <% if (writer) { %>
+                        <p><strong>Writer:</strong> <%= writer.name %></p>
+                    <% } %>
+                </div>
+            </div>            
+            <div class="overview">
+                <p><strong>Overview:</strong> <%= media.overview %></p>
+            </div>
+            <% if (trailer) { %>
+                <div class="trailer">
+                    <p><strong>Trailer:</strong></p>
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/<%= trailer.key %>" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            <% } %>
+        </div>
+
+        <% if (isLoggedIn) { %>
+            <div class="add-to-list">
+                <h2>Add to Your List</h2>
+                <form action="/lists/add" method="POST">
+                    <input type="hidden" name="titleId" value="<%= media.id %>">
+                    <label for="list">Choose an existing list:</label>
+                    <select name="listId" id="list">
+                        <% lists.forEach(list => { %>
+                            <option value="<%= list.listId %>"><%= list.listName %></option>
+                        <% }); %>
+                    </select>
+                    <button type="submit">Add to List</button>
+                </form>
+
+                <h3>Or create a new list:</h3>
+                <form action="/lists/new" method="POST">
+                    <input type="hidden" name="titleId" value="<%= media.id %>">
+                    <label for="listName">List Name:</label>
+                    <input type="text" name="listName" id="listName" required>
+                    <input type="checkbox" name="isPublished" value="1"> Publish
+                    <button type="submit">Create List and Add</button>
+                </form>
+            </div>
         <% } %>
-        <% if (writer) { %>
-            <p><strong>Writer:</strong> <%= writer.name %></p>
-        <% } %>
-        <% if (trailer) { %>
-            <p><strong>Trailer:</strong></p>
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/<%= trailer.key %>" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        <% } %>
+
     </div>
 
     <%- include('partials/footer') %>
 </body>
 </html>
-
