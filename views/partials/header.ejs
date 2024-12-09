@@ -6,9 +6,13 @@
             <li style="display: inline; margin-right: 20px;"><a href="/popular" style="color: white; text-decoration: none;">Popular</a></li>
             <li style="display: inline; margin-right: 20px;"><a href="/top-rated" style="color: white; text-decoration: none;">Top Rated</a></li>
             <li style="display: inline; margin-right: 20px;"><a href="/upcoming" style="color: white; text-decoration: none;">Upcoming</a></li>
-            <!-- Login/Register Links -->
-            <li style="display: inline; margin-left: auto; margin-right: 20px;"><a href="/login" style="color: white; text-decoration: none;">Login</a></li>
-            <li style="display: inline; margin-right: 20px;"><a href="/register" style="color: white; text-decoration: none;">Register</a></li>
+            <% if (isLoggedIn) { %> 
+                <li style="display: inline; margin-right: 20px;"><a href="/logout" style="color: white; text-decoration: none;"> Logout </a></li>
+            <% } else { %>
+                <li style="display: inline; margin-left: auto; margin-right: 20px;"><a href="/login" style="color: white; text-decoration: none;">Login</a></li>
+            <li style="display: inline; margin-right: 20px;"><a href="/signup" style="color: white; text-decoration: none;">Sign Up</a></li>
+            <% } %>
+
         </ul>
     </nav>
 </header>
