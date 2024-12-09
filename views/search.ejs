@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    
+    <%- include('partials/header') %> 
+    <h1><%= title %></h1>
+
+    <form action="/search">
+        Search by title:
+        <input type="text" name="title">
+        <input type="radio" name="mediaType" value="movie" checked>Movies
+        <input type="radio" name="mediaType" value="tv">TV Shows <br>
+        <button>Search</button><br>
+    </form>
+
+
+    <div id="data-container">
+        <% if (typeof movies != 'undefined' && movies && movies.length > 0) { %>
+            <% movies.forEach(movie => { %>
+                <div class="card">
+                    <a href="/movies/<%= movie.id %>">
+                        <img src="https://image.tmdb.org/t/p/w200<%= movie.poster_path %>" alt="<%= movie.title %> Poster">
+                        <h3><%= movie.title %></h3>
+                        <p><%= movie.release_date %></p>
+                        <p class="colorT"> <%= movie.vote_average %></p>
+                        <p><%= movie.overview.substring(0, 100) %>...</p> 
+                    </a>
+                </div>
+            <% }); %>
+
+        <% } else if(typeof tvshows != 'undefined' && tvshows && tvshows.length > 0) { %>
+            <% tvshows.forEach(show => { %>
+                <div class="card">
+                    <a href="/tvshows/<%= show.id %>">
+                        <img src="https://image.tmdb.org/t/p/w200<%= show.poster_path %>" alt="<%= show.name %> Poster">
+                        <h3><%= show.name %></h3>
+                        <p><%= show.first_air_date %></p>
+                        <p class="colorT"> <%= show.vote_average %></p>
+                        <p><%= show.overview.substring(0, 100) %>...</p>
+                    </a>
+                </div>
+            <% }); %>
+
+        <% } else { %>
+            <p>None available.</p>
+        <% } %>
+    </div>
+
+    <%- include('partials/footer') %>
+
+</body>
+</html>
