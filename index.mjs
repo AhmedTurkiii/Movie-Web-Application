@@ -7,7 +7,7 @@ import bcrypt from 'bcrypt';
 
 dotenv.config();
 const TMDB_API_KEY="3150a1889c99611d3bcdfdc513a87194"
-const PORT=3000
+const PORT=10064
 const app = express();
 // const PORT = process.env.PORT || 3000;
 // const TMDB_API_KEY = process.env.TMDB_API_KEY;
@@ -526,6 +526,10 @@ app.get('/login', (req, res) => {
    res.render('login');
 });
 
+app.get('/signup', (req, res) => { 
+  res.render('signup');
+});
+
 app.post('/login', async (req, res) => {
   let username = req.body.username;
   let password = req.body.password;
@@ -544,6 +548,8 @@ app.post('/login', async (req, res) => {
       if (match) {
       req.session.authenticated = true;
       req.session.username = username;
+      req.session.userId = rows[0].userId;
+      console.log('User authenticated:', req.session);
       res.redirect('/');
       } else {
         res.redirect('/login');
@@ -554,35 +560,32 @@ app.post('/login', async (req, res) => {
     res.status(500).send("Server Error");
   }
 });
+ 
 
-app.get('/signup', (req, res) => { 
-  res.render('signup');
-});
 
 app.post('/signup', async (req, res) => { 
   let username = req.body.username;
   let password = req.body.password;
-  console.log(password);
-  let sqlCheck = `SELECT * 
-             FROM user
-             WHERE username = ?`;
-  let sqlInsert = `INSERT into user (username, password)
-                   VALUES (?, ?)`;
+  let sqlCheck = `SELECT * FROM user WHERE username = ?`;
+  let sqlInsert = `INSERT INTO user (username, password) VALUES (?, ?)`;
+  let sqlGetUserId = `SELECT userId FROM user WHERE username = ?`;
   try {
     const connection = await pool.getConnection();
     const [existingUser] = await connection.query(sqlCheck, [username]);
     if (existingUser.length > 0) {
-      res.send("Username already exists");
+      res.json({ success: false, message: "Username already exists" });
     } else {
-      const hashedPassword = await bcrypt.hash(password, 10);
-      await connection.query(sqlInsert, [username, hashedPassword]);
+      await connection.query(sqlInsert, [username, password]);
+      const [userRows] = await connection.query(sqlGetUserId, [username]);
       req.session.authenticated = true;
       req.session.username = username;
-      res.redirect('/');
+      req.session.userId = userRows[0].userId; // Set the userId in session
+      res.json({ success: true, redirectUrl: '/' });
     }
+    connection.release();
   } catch (error) {
     console.error("Error during signup:", error); 
-    res.status(500).send("Server Error");
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 });
 
@@ -640,5 +643,4 @@ function isAuthenticated(req, res, next){
 // server port
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
-});
 });
