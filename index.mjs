@@ -507,12 +507,17 @@ app.post('/lists/:listId/like', async (req, res) => {
   }
   const sqlCheckLike = 'SELECT * FROM likes WHERE userId = ? AND listId = ?';
   const sqlInsertLike = 'INSERT INTO likes (userId, listId) VALUES (?, ?)';
+  const sqlDeleteLike = 'DELETE FROM likes WHERE userId = ? AND listId = ?';
   try {
     const connection = await pool.getConnection();
     const [existingLikes] = await connection.query(sqlCheckLike, [userId, listId]);
+
     if (existingLikes.length === 0) {
       await connection.query(sqlInsertLike, [userId, listId]);
+    } else {
+      await connection.query(sqlDeleteLike, [userId, listId]);
     }
+
     connection.release();
     res.redirect('/userLists');
   } catch (error) {
@@ -520,6 +525,7 @@ app.post('/lists/:listId/like', async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
+
 
 
 app.get('/login', (req, res) => {
