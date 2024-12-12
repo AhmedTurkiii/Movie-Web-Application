@@ -7,7 +7,7 @@ import bcrypt from 'bcrypt';
 
 dotenv.config();
 const TMDB_API_KEY="3150a1889c99611d3bcdfdc513a87194"
-const PORT=10064
+const PORT=3000
 const app = express();
 // const PORT = process.env.PORT || 3000;
 // const TMDB_API_KEY = process.env.TMDB_API_KEY;
@@ -649,4 +649,5 @@ function isAuthenticated(req, res, next){
 // server port
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
+});
 });
