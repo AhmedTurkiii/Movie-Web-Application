@@ -9,7 +9,10 @@
 <body>
     <%- include('partials/header') %> 
 
-    <h1>Welcome to My Movie App</h1>
+    <h1>Welcome to MovieBox</h1>
+    <a href="/" style="margin-left: 20px; margin-right: 20px;">
+        <img src="/logo.png" alt="Logo" style="height: 140px;">
+    </a>   
     
     <% if (isLoggedIn) { %> 
         <p>Welcome back, <%= username %>! Enjoy browsing!</p>

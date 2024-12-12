@@ -507,12 +507,17 @@ app.post('/lists/:listId/like', async (req, res) => {
   }
   const sqlCheckLike = 'SELECT * FROM likes WHERE userId = ? AND listId = ?';
   const sqlInsertLike = 'INSERT INTO likes (userId, listId) VALUES (?, ?)';
+  const sqlDeleteLike = 'DELETE FROM likes WHERE userId = ? AND listId = ?';
   try {
     const connection = await pool.getConnection();
     const [existingLikes] = await connection.query(sqlCheckLike, [userId, listId]);
+
     if (existingLikes.length === 0) {
       await connection.query(sqlInsertLike, [userId, listId]);
+    } else {
+      await connection.query(sqlDeleteLike, [userId, listId]);
     }
+
     connection.release();
     res.redirect('/userLists');
   } catch (error) {
@@ -522,8 +527,13 @@ app.post('/lists/:listId/like', async (req, res) => {
 });
 
 
+
 app.get('/login', (req, res) => {
    res.render('login');
+});
+
+app.get('/signup', (req, res) => { 
+  res.render('signup');
 });
 
 app.post('/login', async (req, res) => {
@@ -544,9 +554,10 @@ app.post('/login', async (req, res) => {
       if (match) {
       req.session.authenticated = true;
       req.session.username = username;
+      req.session.userId = rows[0].userId;
+      console.log('User authenticated:', req.session);
       res.redirect('/');
       } else {
-        res.send("Invalid username or password");
         res.redirect('/login');
       }
     }
@@ -555,35 +566,32 @@ app.post('/login', async (req, res) => {
     res.status(500).send("Server Error");
   }
 });
+ 
 
-app.get('/signup', (req, res) => { 
-  res.render('signup');
-});
 
 app.post('/signup', async (req, res) => { 
   let username = req.body.username;
   let password = req.body.password;
-  console.log(password);
-  let sqlCheck = `SELECT * 
-             FROM user
-             WHERE username = ?`;
-  let sqlInsert = `INSERT into user (username, password)
-                   VALUES (?, ?)`;
+  let sqlCheck = `SELECT * FROM user WHERE username = ?`;
+  let sqlInsert = `INSERT INTO user (username, password) VALUES (?, ?)`;
+  let sqlGetUserId = `SELECT userId FROM user WHERE username = ?`;
   try {
     const connection = await pool.getConnection();
     const [existingUser] = await connection.query(sqlCheck, [username]);
     if (existingUser.length > 0) {
-      res.send("Username already exists");
+      res.json({ success: false, message: "Username already exists" });
     } else {
-      const hashedPassword = await bcrypt.hash(password, 10);
-      await connection.query(sqlInsert, [username, hashedPassword]);
+      await connection.query(sqlInsert, [username, password]);
+      const [userRows] = await connection.query(sqlGetUserId, [username]);
       req.session.authenticated = true;
       req.session.username = username;
-      res.redirect('/');
+      req.session.userId = userRows[0].userId; // Set the userId in session
+      res.json({ success: true, redirectUrl: '/' });
     }
+    connection.release();
   } catch (error) {
     console.error("Error during signup:", error); 
-    res.status(500).send("Server Error");
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 });
 

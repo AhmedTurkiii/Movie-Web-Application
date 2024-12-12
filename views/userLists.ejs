@@ -19,8 +19,11 @@
                     <p>Likes: <%= list.likeCount %></p>
                     <p><a href="/lists/<%= list.listId %>">View List</a></p>
                     <% if (isLoggedIn) { %>
+                        <% const liked = list.likedByUser; %> 
                         <form action="/lists/<%= list.listId %>/like" method="POST" style="display:inline;">
-                            <button type="submit">Like</button>
+                            <button type="submit">
+                                <%= liked ? 'Unlike' : 'Like' %>
+                            </button>
                         </form>
                     <% } %>
                 </div>
@@ -33,4 +36,3 @@
     <%- include('partials/footer') %>
 </body>
 </html>
-
